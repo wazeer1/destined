@@ -1,118 +1,75 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
+  Platform
 } from 'react-native';
+import SplashScreen from './src/components/utils/SplashScreen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AuthProvider from './src/context/AuthContext';
+import RootNavigator from './src/navigation/RootNavigator';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+// StatusBar styles and transitions
+const STYLES = ['default', 'dark-content', 'light-content'] as const;
+const TRANSITIONS = ['fade', 'slide', 'none'] as const;
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const App = () => {
+  const [splash, setSplash] = useState(true);
+  
+  useEffect(() => {
+    // Simulate loading time for splash screen
+    const timer = setTimeout(() => {
+      setSplash(false);
+    }, 5000);
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    // Cleanup timeout on component unmount
+    return () => clearTimeout(timer);
+  }, []);
+
+  const [hidden, setHidden] = useState(false);
+  const [statusBarStyle, setStatusBarStyle] = useState<StatusBarStyle>(
+    STYLES[0]
   );
-}
+  const [statusBarTransition, setStatusBarTransition] = useState<
+    'fade' | 'slide' | 'none'
+  >(TRANSITIONS[0]);
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const changeStatusBarVisibility = () => setHidden(!hidden);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const changeStatusBarStyle = () => {
+    const styleId = STYLES.indexOf(statusBarStyle) + 1;
+    setStatusBarStyle(styleId === STYLES.length ? STYLES[0] : STYLES[styleId]);
+  };
+
+  const changeStatusBarTransition = () => {
+    const transition = TRANSITIONS.indexOf(statusBarTransition) + 1;
+    setStatusBarTransition(transition === TRANSITIONS.length ? TRANSITIONS[0] : TRANSITIONS[transition]);
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <View style={{backgroundColor:'#0E0223', flex:1}}>
       <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+        animated={true}
+        backgroundColor="#61dafb"
+        barStyle={statusBarStyle}
+        showHideTransition={statusBarTransition}
+        hidden={hidden}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      {splash ? (
+        <SplashScreen />
+      ) : (
+        <SafeAreaProvider>
+          <AuthProvider>
+            <RootNavigator />
+          </AuthProvider>
+        </SafeAreaProvider>
+      )}
+    </View>
   );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+};
 
 export default App;
+
+const styles = StyleSheet.create({});

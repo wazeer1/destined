@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "112771689707",
+    "project_id": "destined-d721a",
+    "storage_bucket": "destined-d721a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:112771689707:android:c5c7464b1b4e6b37fd22ae",
+        "android_client_info": {
+          "package_name": "com.destined"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2-w2xu6NmpHghf_bO1KXcRZ1I0RVwkpY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
